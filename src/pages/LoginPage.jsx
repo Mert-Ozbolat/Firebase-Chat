@@ -3,13 +3,10 @@ import { signInWithPopup } from 'firebase/auth'
 import { auth, provider } from '../firebase'
 
 
-const LoginPage = ({ setIsAuth }) => {
+const LoginPage = () => {
 
     const handleClick = () => {
         signInWithPopup(auth, provider)
-            .then((res) => {
-                setIsAuth(true)
-            })
             .catch((err) => console.log(err))
     }
 
