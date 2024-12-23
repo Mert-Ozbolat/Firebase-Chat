@@ -1,9 +1,19 @@
-import React from 'react'
+import { auth } from "../firebase";
 
-const Messages = () => {
+const Messages = ({ data }) => {
+    if (auth.currentUser.uid === data.author.id) {
+        return <div className="msg-user">{data.text}</div>;
+    }
     return (
-        <div>Messages</div>
-    )
-}
+        <div>
+            <div>
+                <img src={data.author.photo} />
+                <span>{data.author.name}</span>
 
-export default Messages
+                <p className="msg-text">{data.text}</p>
+            </div>
+        </div>
+    );
+};
+
+export default Messages;

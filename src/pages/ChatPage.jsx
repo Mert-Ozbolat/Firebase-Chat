@@ -1,17 +1,21 @@
-import React, { useState } from 'react'
-import { auth, db } from '../firebase'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import Main from '../components/Main'
-
+import { useState } from "react";
+import { auth, db } from "../firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import Main from "../components/Main";
+import EmojiPicker from "emoji-picker-react";
 
 const ChatPage = ({ room, setRoom }) => {
-    const [text, setText] = useState()
-    const handleSubmmit = async (e) => {
-        e.preventDefault()
+    const [text, setText] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-        if (text.trim() === "") return
+        if (text.trim() === "") return;
 
-        const messagesCol = collection(db, "messages")
+        setText("");
+        setIsOpen(false);
+
+        const messagesCol = collection(db, "messages");
 
         await addDoc(messagesCol, {
             text,
@@ -19,16 +23,13 @@ const ChatPage = ({ room, setRoom }) => {
             author: {
                 id: auth.currentUser.uid,
                 name: auth.currentUser.displayName,
-                photo: auth.currentUser.photoURL
+                photo: auth.currentUser.photoURL,
             },
             createdAt: serverTimestamp(),
-        })
-
-    }
-
+        });
+    };
     return (
-        <div className='chat-page'>
-
+        <div className="chat-room">
             <header>
                 <p>{auth.currentUser.displayName}</p>
                 <p>{room}</p>
@@ -37,10 +38,33 @@ const ChatPage = ({ room, setRoom }) => {
 
             <Main room={room} />
 
-            <form className='message-form' onSubmit={handleSubmmit}>
-                <input type="text" placeholder='mesajınızı yazınız'
+            <form onSubmit={handleSubmit} className="message-form">
+                <input
+                    value={text}
+                    type="text"
+                    placeholder="Write your message."
                     onChange={(e) => setText(e.target.value)}
                 />
+
+
+
+                <div>
+                    <EmojiPicker
+                        onEmojiClick={(e) => {
+                            setText(text + e.emoji);
+                        }}
+                        open={isOpen}
+                    />
+                    <button
+                        type="button"
+                        className="emoji-btn"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        😎
+                    </button>
+                </div>
+
+
                 <button type='submit'>Gönder</button>
             </form>
 
