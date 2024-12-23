@@ -133,6 +133,9 @@ button {
 
 .chat-page main {
     display: flex;
+    color: black;
+    flex-direction: column;
+
 
     .warn {
         flex: 1;

@@ -1,13 +1,28 @@
 import React, { useState } from 'react'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import Main from '../components/Main'
 
 
 const ChatPage = ({ room, setRoom }) => {
     const [text, setText] = useState()
-    const handleSubmmit = (e) => {
+    const handleSubmmit = async (e) => {
         e.preventDefault()
 
         if (text.trim() === "") return
+
+        const messagesCol = collection(db, "messages")
+
+        await addDoc(messagesCol, {
+            text,
+            room,
+            author: {
+                id: auth.currentUser.uid,
+                name: auth.currentUser.displayName,
+                photo: auth.currentUser.photoURL
+            },
+            createdAt: serverTimestamp(),
+        })
 
     }
 
@@ -20,11 +35,7 @@ const ChatPage = ({ room, setRoom }) => {
                 <button onClick={() => setRoom(null)}>Different Room</button>
             </header>
 
-            <main>
-                <div className='warm'>
-                    <p>Sohbete ilk mesajı gönderin</p>
-                </div>
-            </main>
+            <Main room={room} />
 
             <form className='message-form' onSubmit={handleSubmmit}>
                 <input type="text" placeholder='mesajınızı yazınız'
