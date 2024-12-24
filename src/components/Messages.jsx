@@ -1,4 +1,5 @@
 import { auth } from "../firebase";
+import generateColor from "../utils/generateColor";
 
 const Messages = ({ data }) => {
     if (auth.currentUser.uid === data.author.id) {
@@ -6,10 +7,13 @@ const Messages = ({ data }) => {
     }
     return (
         <div>
+            <img src={data.author.photo} />
             <div>
-                <img src={data.author.photo} />
-                <span>{data.author.name}</span>
-
+                <span
+                    style={{
+                        color: generateColor(data.author.id)
+                    }}
+                >{data.author.name}</span>
                 <p className="msg-text">{data.text}</p>
             </div>
         </div>
